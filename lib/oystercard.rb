@@ -4,9 +4,8 @@ class Oystercard
   MINIMUM_FARE = 1
   def initialize(balance= 0)
     @balance = balance
-    @entry_station = entry_station
-    @exit_station = exit_station
     @trip_history = []
+    @journey = Journey.new
   end
 
   def top_up(amount)
@@ -19,26 +18,22 @@ class Oystercard
     @balance -= amount
   end
 
-  def in_journey?
-    @entry_station != nil
-  end
-
   def touch_in(station)
     fail "Balance below minimum." if @balance < MINIMUM_FARE
-    @entry_station = station
+    @journey.start_journey(station)
     "Touched in successfully"
   end
 
   def touch_out(station)
     deduct(MINIMUM_FARE)
-    @exit_station = station
-    store_stations 
-    @entry_station = nil
+    @journey.end_journey(station)
+    store_stations
+
     "Touched out successfully"
   end
 
    def store_stations
-     @trip_history << { entry_station: @entry_station, exit_station:  @exit_station}
+      @trip_history << @journey.current_journey
    end
 
 private

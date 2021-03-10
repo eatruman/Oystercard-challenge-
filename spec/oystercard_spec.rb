@@ -1,5 +1,6 @@
 require 'oystercard'
 require 'station'
+require 'journey'
 # challenge 3: I want to my card to have a balance
 describe Oystercard do
   # card = Oystercard.new
@@ -25,19 +26,19 @@ describe Oystercard do
   end
 
   #challenge 8
-  describe '#in_journey?' do
-    it 'return false when not in journey' do
-      expect(card.in_journey?).to eq(false)
-    end
-  end
+  # describe '#in_journey?' do
+  #   it 'return false when not in journey' do
+  #     expect(card.in_journey?).to eq(false)
+  #   end
+  # end
 
 describe '#touch_in' do
     context 'when equal to or above minimum balance' do
-      it 'set in_journey? to true' do
-
-        card.touch_in(station)
-        expect(card.in_journey?).to eq(true)
-      end
+      # it 'set in_journey? to true' do
+      #
+      #   card.touch_in(station)
+      #   expect(card.in_journey?).to eq(true)
+      # end
       it 'return touch-in confirmation' do
 
         expect(card.touch_in(station)).to eq("Touched in successfully")
@@ -72,19 +73,19 @@ end
     end
   end
   # Challenge 11
-  describe '#entry_station' do
-    it 'checks the entry station of the card' do
-      card.touch_in("Victoria")
-      expect(card.entry_station).to eq("Victoria")
-    end
-  end
+  # describe '#entry_station' do
+  #   it 'checks the entry station of the card' do
+  #     card.touch_in("Victoria")
+  #     expect(card.entry_station).to eq("Victoria")
+  #   end
+  # end
   # Challenge 12
   describe "#trip_history" do
     let(:journey) { { entry_station: "Victoria", exit_station: "King's Cross"} }
 
     it "had an empty list by default" do
       expect(card.trip_history).to be_empty
-    end 
+    end
 
     it 'lists the past trips' do
       card.touch_in("Victoria")
