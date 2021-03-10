@@ -1,17 +1,19 @@
 require 'oystercard'
+require 'station'
 # challenge 3: I want to my card to have a balance
 describe Oystercard do
   # card = Oystercard.new
-  let(:card) { Oystercard.new }
+  let(:card) { Oystercard.new(5) }
+  let(:station) {Station.new}
   it 'creates a new card with a balance of 0' do
-    expect(card.balance).to eq(0)
+    expect(subject.balance).to eq(0)
   end
   describe '#top_up' do
     context 'before reaching card limit' do
     # challenge 5: I want to top up my card
       it 'tops up the balance of the card' do
         # allow(card).to receive(:balance) { 0 }
-        expect(card.top_up(5)).to eq(5)
+        expect(card.top_up(5)).to eq(10)
       end
     end
     context 'going over card limit' do
@@ -21,15 +23,6 @@ describe Oystercard do
       end
     end
   end
-  # challenge 7
-  # describe '#deduct()' do
-  #   context "when you tap out"
-  #     it 'deducts an amount from the balance' do
-  #     subject.top_up(20)
-  #     expect{ subject.deduct 3}.to change{ subject.balance }.by -3
-  #
-  #   end
-  # end
 
   #challenge 8
   describe '#in_journey?' do
@@ -38,53 +31,51 @@ describe Oystercard do
     end
   end
 
-  describe '#touch_in' do
+describe '#touch_in' do
     context 'when equal to or above minimum balance' do
-      before(:all) do
-        card.top_up(5)
       it 'set in_journey? to true' do
 
-        card.touch_in
+        card.touch_in(station)
         expect(card.in_journey?).to eq(true)
       end
       it 'return touch-in confirmation' do
 
-        expect(card.touch_in).to eq("Touched in successfully")
+        expect(card.touch_in(station)).to eq("Touched in successfully")
       end
     end
-    end
+
     #Challenge 9
     context 'when below the minimum balance' do
       it "raises an error when you touch in" do
-        expect { card.touch_in }.to raise_error "Balance below minimum."
+        expect { subject.touch_in(station) }.to raise_error "Balance below minimum."
       end
     end
-  end
+end
 
   describe '#touch_out' do
-      #  card.top_up(5)
-      # let(:used_card) { card.touch_in }
-      before(:all) do
-        card.top_up(5)
-        card.touch_in
-    it 'sets in_journey? to false' do
-      # active_card.touch_in
-
-      # card.top_up(5)
-      # card.touch_in
-      card.touch_out
-      expect(card.in_journey?).to eq(false)
+    before(:all) do
+        card.touch_in(station)
+      it 'sets in_journey? to false' do
+        card.touch_out
+        expect(card.in_journey?).to eq(false)
+      end
+      it 'returns touch-out confirmation' do
+        expect(card.touch_out).to eq("Touched out successfully")
+      end
+       it "deducts fare from balance" do
+         expect { card.touch_out }.to change { card.balance }.by(-1)
+       end
+       it "sets entry station to nil" do
+         card.touch_out
+         expect(card.entry_station).to eq(nil)
+       end 
     end
-    it 'returns touch-out confirmation' do
-      # card.top_up(5)
-      # card.touch_in
-      expect(card.touch_out).to eq("Touched out successfully")
-    end
-     it "deducts fare from balance" do
-       # card.top_up(5)
-       # card.touch_in
-       expect { card.touch_out }.to change { card.balance }.by(-1)
-     end
   end
-end 
+  # Challenge 11
+  describe '#entry_station' do
+    it 'checks the entry station of the card' do
+      card.touch_in("Victoria")
+      expect(card.entry_station).to eq("Victoria")
+    end
+  end
 end
