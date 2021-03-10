@@ -4,7 +4,7 @@ require 'station'
 describe Oystercard do
   # card = Oystercard.new
   let(:card) { Oystercard.new(5) }
-  let(:station) {Station.new}
+  let(:station) { double :station }
   it 'creates a new card with a balance of 0' do
     expect(subject.balance).to eq(0)
   end
@@ -68,7 +68,7 @@ end
        it "sets entry station to nil" do
          card.touch_out
          expect(card.entry_station).to eq(nil)
-       end 
+       end
     end
   end
   # Challenge 11
@@ -76,6 +76,20 @@ end
     it 'checks the entry station of the card' do
       card.touch_in("Victoria")
       expect(card.entry_station).to eq("Victoria")
+    end
+  end
+  # Challenge 12
+  describe "#trip_history" do
+    let(:journey) { { entry_station: "Victoria", exit_station: "King's Cross"} }
+
+    it "had an empty list by default" do
+      expect(card.trip_history).to be_empty
+    end 
+
+    it 'lists the past trips' do
+      card.touch_in("Victoria")
+      card.touch_out("King's Cross")
+      expect(card.trip_history).to eq([journey])
     end
   end
 end
